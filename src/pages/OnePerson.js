@@ -17,7 +17,7 @@ const OnePerson = () => {
   useEffect(() => {
     const fetchDataAndSetChild = async () => {
       try {
-        const response = await fetch('http://localhost:8081/api/needs');
+        const response = await fetch(process.env.REACT_APP_API_URL + '/api/all-needs');
         const data = await response.json();
         const childrenList = data.data;
         setChildren(childrenList);
@@ -54,7 +54,7 @@ const OnePerson = () => {
     try {
       const newSponsoredStatus = 1;
       
-      await fetch(`http://localhost:8081/api/needs/${personId}`, {
+      await fetch(`${process.env.REACT_APP_API_URL}/api/needs/${personId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
