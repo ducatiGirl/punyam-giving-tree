@@ -11,7 +11,7 @@ const WishlistTable = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('http://localhost:8081/api/needs')
+    fetch(process.env.REACT_APP_API_URL + '/api/needs')
       .then(response => response.json())
       .then(data => {
         setChildren(data.data);
@@ -33,7 +33,7 @@ const WishlistTable = () => {
       );
 
       // Send the update to the server in the background
-      await fetch(`http://localhost:8081/api/needs/${id}`, {
+      await fetch(`${process.env.REACT_APP_API_URL}/api/needs/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
