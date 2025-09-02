@@ -90,6 +90,35 @@ const OnePerson = () => {
     }
   };
 
+  // New function to generate page numbers with ellipsis
+  const generatePageNumbers = (currentIndex, totalItems) => {
+    const pageNumbers = [];
+    const totalPages = totalItems;
+    const currentPage = currentIndex + 1;
+
+    pageNumbers.push(1);
+
+    if (currentPage > 3) {
+      pageNumbers.push('...');
+    }
+
+    let startPage = Math.max(2, currentPage - 1);
+    let endPage = Math.min(totalPages - 1, currentPage + 1);
+
+    for (let i = startPage; i <= endPage; i++) {
+      pageNumbers.push(i);
+    }
+
+    if (currentPage < totalPages - 2) {
+      pageNumbers.push('...');
+    }
+
+    if (totalPages > 1) {
+      pageNumbers.push(totalPages);
+    }
+    return [...new Set(pageNumbers)];
+  };
+
   const getRandomStatement = () => {
     const randomIndex = Math.floor(Math.random() * compellingStatements.length);
     return compellingStatements[randomIndex];
@@ -145,9 +174,26 @@ const OnePerson = () => {
         )}
       </div>
       <div className="pagination-controls">
-        <button onClick={goToPrevPage} disabled={currentIndex === 0}>Previous</button>
-        <span>Page {currentIndex + 1} of {children.length}</span>
-        <button onClick={goToNextPage} disabled={currentIndex === children.length - 1}>Next</button>
+        <button onClick={goToPrevPage} disabled={currentIndex === 0}>
+          &lt;
+        </button>
+        {generatePageNumbers(currentIndex, children.length).map((page, index) => (
+          <React.Fragment key={index}>
+            {page === '...' ? (
+              <span>...</span>
+            ) : (
+              <button
+                className={(currentIndex + 1) === page ? 'active' : ''}
+                onClick={() => setSearchParams({ id: children[page - 1].id })}
+              >
+                {page}
+              </button>
+            )}
+          </React.Fragment>
+        ))}
+        <button onClick={goToNextPage} disabled={currentIndex === children.length - 1}>
+          &gt;
+        </button>
       </div>
       <Popup trigger={buttonPopup} setTrigger={setButtonPopup}>
         {selectedChild && (
