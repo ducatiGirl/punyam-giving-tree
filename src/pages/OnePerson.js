@@ -65,6 +65,10 @@ const OnePerson = () => {
       
       setSelectedChild({ ...selectedChild, sponsored: newSponsoredStatus });
 
+      // **NEW LOGIC: Update sponsored count in local storage**
+      const currentCount = parseInt(localStorage.getItem('sponsoredCount') || '0', 10);
+      localStorage.setItem('sponsoredCount', currentCount + 1);
+
     } catch (error) {
       console.error("Failed to update sponsorship status:", error);
     }
@@ -90,7 +94,6 @@ const OnePerson = () => {
     }
   };
 
-  // New function to generate page numbers with ellipsis
   const generatePageNumbers = (currentIndex, totalItems) => {
     const pageNumbers = [];
     const totalPages = totalItems;
