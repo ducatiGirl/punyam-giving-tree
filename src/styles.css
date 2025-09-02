@@ -1,33 +1,21 @@
-/* General Styles */
 *{
     box-sizing: border-box;
 }
 body{
-    margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    background-color: #f8f9fa;
-    color: #343a40;
+    margin:0;
 }
 
-/* Navigation and Layout */
 .container {
     margin: 1rem;
     text-align: left;
-    font-size: 2cap;
-}
-h1 {
-    text-align: center;
-    font-size: 3rem;
-    color: #218838;
-    margin-bottom: 2rem;
-    letter-spacing: 2px;
+    font-size:2cap
 }
 .nav{
     background-color: #333;
     color: white;
-    display: flex;
+    display:flex;
     justify-content: space-between;
-    align-items: stretch;
+    align-items:stretch;
     gap: 2rem;
     padding: 0 1rem;
 }
@@ -40,7 +28,9 @@ h1 {
     list-style: none;
     display: flex;
     gap: 1rem;
+
 }
+
 .nav a {
     color: inherit;
     text-decoration: none;
@@ -48,6 +38,7 @@ h1 {
     display: flex;
     align-items: center;
     padding: .25rem;
+
 }
 .nav li.active {
     background-color: #555;
@@ -55,28 +46,26 @@ h1 {
 .nav li:hover{
     background-color: #777;
 }
-
-/* Table Styles */
 table {
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: collapse; /* Makes borders continuous */
 }
+
 th, td {
     border: 1px solid black;
     padding: 8px;
     text-align: left;
 }
-
-/* Giving Tree Container (WishlistTable and OnePerson) */
 .giving-tree-container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
+  display: grid; /* Use grid to create the two-column layout */
+  grid-template-columns: 1fr 1fr; /* Creates two columns of equal width */
+  gap: 20px; /* Adds space between grid items */
   padding: 20px;
   background-color: #f0f2f5; 
-  max-width: 800px;
-  margin: 0 auto;
+  max-width: 800px; /* Adjust this to control the overall width */
+  margin: 0 auto; /* Center the grid container on the page */
 }
+
 .child-card {
   background-color: #fff;
   border-radius: 10px;
@@ -87,26 +76,32 @@ th, td {
   flex-direction: column;
   justify-content: space-between;
 }
+
 .child-header h3 {
   font-size: 1.5em;
   color: #333;
   margin-bottom: 10px;
 }
+
 .child-details {
   margin-bottom: 20px;
 }
+
 .child-details p {
   margin: 5px 0;
   color: #666;
 }
+
 .child-details strong {
   color: #000;
 }
+
 .button-group {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
+
 .sponsor-button {
   padding: 12px 20px;
   border: none;
@@ -114,12 +109,19 @@ th, td {
   font-weight: bold;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  background-color: #007bff;
+}
+
+.sponsor-button {
+  background-color: #007bff; /* Blue */
   color: #fff;
 }
+
+
+
 .sponsor-button:hover {
   background-color: #0056b3;
 }
+
 .pagination-controls {
   display: flex;
   justify-content: center;
@@ -127,6 +129,7 @@ th, td {
   gap: 20px;
   margin-top: 20px;
 }
+
 .pagination-controls button {
   padding: 10px 15px;
   border: 1px solid #ccc;
@@ -134,38 +137,33 @@ th, td {
   background-color: #fff;
   cursor: pointer;
 }
+
 .pagination-controls button:disabled {
   background-color: #f0f0f0;
   color: #a0a0a0;
   cursor: not-allowed;
 }
 
-/* Image and Mango Icon Positioning */
 .image-container {
-    position: relative; /* This is the key. It sets the positioning context for its children. */
-    display: block;
-    margin: 0 auto;
-    width: 65%;
-    max-width: 800px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-    overflow: hidden;
+  position: relative;
+  display: block; /* Use block to center the entire container */
+  margin: 0 auto; /* This centers the container horizontally on the page */
+  width: 40%;
 }
 
 .mango-tree-img {
-    width: 100%;
-    height: auto;
-    display: block;
+  width: 100%; /* Make the image fill its new container */
+  height: auto; /* Maintain aspect ratio */
 }
 
 .mango-icon {
-    position: absolute; /* The mangoes will be positioned relative to the .image-container */
-    z-index: 2;
-    transform: translate(-50%, -50%);
-    filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2));
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
 }
 
-/* OnePerson Page Styles */
 .giving-tree-no-container {
   display: flex;
   flex-direction: column;
@@ -173,7 +171,7 @@ th, td {
   justify-content: center;
   min-height: 100vh;
   padding: 2rem;
-  background-color: #f0f4f8;
+  background-color: #f0f4f8; /* A soft, light-blue background */
   font-family: Arial, sans-serif;
 }
 .child-no-card {
@@ -187,6 +185,7 @@ th, td {
   margin-bottom: 2rem;
   transition: transform 0.3s ease-in-out;
 }
+
 .child-no-card:hover {
   transform: translateY(-5px);
 }
@@ -196,9 +195,12 @@ th, td {
   color: #333;
   margin-bottom: 1rem;
 }
+
 .one-child-details p strong {
-  color: #007bff;
+  color: #007bff; /* A nice blue for emphasis */
 }
+
+/* Specific styles for the story text */
 .story-text {
   font-style: italic;
   color: #555;
@@ -207,11 +209,13 @@ th, td {
   margin-top: 1.5rem;
   margin-bottom: 1.5rem;
 }
+
 .button-group {
   margin-top: 2rem;
 }
+
 .sponsor-button {
-  background-color: #28a745;
+  background-color: #28a745; /* A vibrant green for action */
   color: white;
   border: none;
   padding: 1rem 2rem;
@@ -221,28 +225,61 @@ th, td {
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.1s ease;
 }
+
 .sponsor-button:hover {
   background-color: #218838;
   transform: scale(1.02);
 }
+
 .pagination-controls {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 1rem;
-  margin-top: 1rem;
+  gap: 8px;
+  margin-top: 20px;
 }
-.pagination-controls button {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 8px;
+
+.pagination-controls button,
+.pagination-controls span {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #ccc;
+  background-color: white;
+  color: black;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  border-radius: 4px;
+  font-weight: bold;
 }
+
 .pagination-controls button:disabled {
-  background-color: #ccc;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
+.pagination-controls button.active {
+  background-color: black;
+  color: white;
+  border-color: black;
+}
+
+.pagination-controls span {
+  border: none;
+  background-color: transparent;
+  cursor: default;
+}
+
+.pagination-controls button:not(.active):hover {
+  background-color: #f0f0f0;
+}
+.sponsored-count-display {
+  text-align: center;
+  font-size: 1.5em;
+  font-weight: bold;
+  margin-bottom: 1px;
+  padding: 1px;
+  border-radius: 8px;
+
+}
