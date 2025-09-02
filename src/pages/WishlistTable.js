@@ -11,53 +11,73 @@ const WishlistTable = () => {
     const itemsPerPage = 10;
     const [loading, setLoading] = useState(true);
 
+    const animateCount = (initialCount) => {
+        const duration = 2000;
+        const stepTime = 20;
+        const totalSteps = duration / stepTime;
+        const increment = initialCount / totalSteps;
+
+        let currentCount = 0;
+        const timer = setInterval(() => {
+            currentCount += increment;
+            if (currentCount >= initialCount) {
+                clearInterval(timer);
+                setSponsoredCount(initialCount);
+            } else {
+                setSponsoredCount(Math.ceil(currentCount));
+            }
+        }, stepTime);
+        return () => clearInterval(timer);
+    };
+
     useEffect(() => {
-        fetch(process.env.REACT_APP_API_URL + '/api/needs')
-            .then(response => response.json())
-            .then(data => {
-                setChildren(data.data);
-                setLoading(false);
-                // Initialize the sponsored count based on the fetched data
-                const initialSponsored = data.data.filter(child => child.sponsored).length;
-                
-                // Animate the sponsored count from 0 to the initial count
-                const duration = 2000; // 2 seconds
-                const stepTime = 20; // Update every 20ms
-                const totalSteps = duration / stepTime;
-                const increment = initialSponsored / totalSteps;
+        const storedCount = localStorage.getItem('sponsoredCount');
 
-                let currentCount = 0;
-                const timer = setInterval(() => {
-                    currentCount += increment;
-                    if (currentCount >= initialSponsored) {
-                        clearInterval(timer);
-                        setSponsoredCount(initialSponsored);
-                    } else {
-                        setSponsoredCount(Math.ceil(currentCount));
-                    }
-                }, stepTime);
-
-                return () => clearInterval(timer);
-            })
-            .catch(error => {
-                console.error("Failed to fetch data:", error);
-                setLoading(false);
-            });
+        if (storedCount) {
+            const initialCount = parseInt(storedCount, 10);
+            animateCount(initialCount);
+            // Optionally, fetch data in the background to keep the list updated
+            fetch(process.env.REACT_APP_API_URL + '/api/needs')
+                .then(response => response.json())
+                .then(data => {
+                    setChildren(data.data);
+                    setLoading(false);
+                })
+                .catch(error => {
+                    console.error("Failed to fetch data:", error);
+                    setLoading(false);
+                });
+        } else {
+            fetch(process.env.REACT_APP_API_URL + '/api/needs')
+                .then(response => response.json())
+                .then(data => {
+                    setChildren(data.data);
+                    setLoading(false);
+                    const initialSponsored = data.data.filter(child => child.sponsored).length;
+                    localStorage.setItem('sponsoredCount', initialSponsored);
+                    animateCount(initialSponsored);
+                })
+                .catch(error => {
+                    console.error("Failed to fetch data:", error);
+                    setLoading(false);
+                });
+        }
     }, []);
 
     const handleCheckboxChange = async (id) => {
         try {
-            // Optimistically update the UI state
             setChildren(prevChildren =>
                 prevChildren.map(child =>
                     child.id === id ? { ...child, sponsored: true } : child
                 )
             );
             
-            // Increment the sponsored count immediately
-            setSponsoredCount(prevCount => prevCount + 1);
+            setSponsoredCount(prevCount => {
+                const newCount = prevCount + 1;
+                localStorage.setItem('sponsoredCount', newCount);
+                return newCount;
+            });
 
-            // Send the update to the server
             await fetch(`${process.env.REACT_APP_API_URL}/api/needs/${id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
@@ -67,14 +87,16 @@ const WishlistTable = () => {
 
         } catch (error) {
             console.error("Failed to update sponsorship status:", error);
-            // Revert the UI state if the API call fails
             setChildren(prevChildren =>
                 prevChildren.map(child =>
                     child.id === id ? { ...child, sponsored: false } : child
                 )
             );
-            // Decrement the sponsored count to revert the change
-            setSponsoredCount(prevCount => prevCount - 1);
+            setSponsoredCount(prevCount => {
+                const newCount = prevCount - 1;
+                localStorage.setItem('sponsoredCount', newCount);
+                return newCount;
+            });
         }
     };
 
@@ -91,7 +113,6 @@ const WishlistTable = () => {
     const nextPage = () => setCurrentPage(prevPage => Math.min(prevPage + 1, totalPages));
     const prevPage = () => setCurrentPage(prevPage => Math.max(prevPage - 1, 1));
     
-    // Pagination button logic for the new style
     const generatePageNumbers = (currentPage, totalPages) => {
         const pageNumbers = [];
         pageNumbers.push(1);
@@ -116,7 +137,6 @@ const WishlistTable = () => {
         }
         return [...new Set(pageNumbers)];
     };
-
 
     if (loading) {
         return <div className="loading-state">Loading...</div>;
