@@ -36,7 +36,7 @@ const WishlistTable = () => {
         if (storedCount) {
             const initialCount = parseInt(storedCount, 10);
             animateCount(initialCount);
-            // Optionally, fetch data in the background to keep the list updated
+            // Fetch data in the background to keep the child list updated
             fetch(process.env.REACT_APP_API_URL + '/api/needs')
                 .then(response => response.json())
                 .then(data => {
@@ -48,6 +48,7 @@ const WishlistTable = () => {
                     setLoading(false);
                 });
         } else {
+            // First visit or localStorage is cleared
             fetch(process.env.REACT_APP_API_URL + '/api/needs')
                 .then(response => response.json())
                 .then(data => {
