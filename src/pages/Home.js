@@ -59,7 +59,7 @@ const Home = () => {
             <Link to={`/OnePerson?id=${child.id}`} key={child.id}>
             
               <MangoIcon
-                color={isSponsored ? '#218838' : '#F4B400'}
+                color={isSponsored ? '#d72d2dff' : '#F4B400'}
                 size={30}
                 className="mango-icon"
                 style={child.position}
