@@ -13,7 +13,7 @@ const WishlistTable = ({ sponsoredCount, setSponsoredCount }) => {
 
     // This effect runs the animation whenever the sponsoredCount prop changes.
     useEffect(() => {
-        const duration = 2000;
+        const duration = 1000;
         const start = displayedCount;
         const end = sponsoredCount;
         let startTime = null;
