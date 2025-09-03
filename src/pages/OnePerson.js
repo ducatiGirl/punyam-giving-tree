@@ -62,8 +62,7 @@ const OnePerson = () => {
             });
             console.log(`Updated personId: ${personId} as sponsored status: ${newSponsoredStatus}.`);
             setSelectedChild({ ...selectedChild, sponsored: newSponsoredStatus });
-            const currentCount = parseInt(localStorage.getItem('sponsoredCount') || '0', 10);
-            localStorage.setItem('sponsoredCount', currentCount + 1);
+
         } catch (error) {
             console.error("Failed to update sponsorship status:", error);
         }
@@ -89,7 +88,6 @@ const OnePerson = () => {
         }
     };
 
-    // This function is for the new, mobile-friendly pagination.
     const getMobilePageNumbers = () => {
         if (!selectedChild || children.length === 0) return [];
         const currentIndex = children.findIndex(child => child.id === selectedChild.id);
