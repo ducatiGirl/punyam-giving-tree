@@ -128,6 +128,9 @@ const WishlistTable = ({ sponsoredCount, setSponsoredCount }) => {
         <>
             <div className="sponsored-count-display">
                 <h2>We have already sponsored {displayedCount} children!</h2>
+                <Link to={`/SponsoredChildren`}>
+                    <h3>Click here to find out more about these children</h3>
+                </Link>
             </div>
             <div className="giving-tree-container">
                 {currentItems.map((child) => {
