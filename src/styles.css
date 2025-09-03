@@ -255,9 +255,21 @@ body {
 
 .sponsored-count-display {
     text-align: center;
-    font-size: 1.5em;
+    font-size: 1.5em; /* This sets the font size for the h2 element */
     font-weight: bold;
     margin-bottom: 1px;
     padding: 1px;
     border-radius: 8px;
+}
+
+/* New styles for the link text */
+.sponsored-count-display p {
+    font-size: 0.7em; /* Makes the font smaller relative to its parent */
+    margin-top: 0.2rem; /* Reduces the space between the heading and the link */
+    font-weight: normal; /* Removes the bold from the paragraph text */
+    color: #007bff; /* Gives it a blue color to look like a link */
+}
+
+.sponsored-count-display p:hover {
+    text-decoration: underline; /* Adds an underline on hover for better user experience */
 }
