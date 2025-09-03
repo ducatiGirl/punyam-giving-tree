@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import Popup from '../components/Popup';
 
-const OnePerson = () => {
+const OnePerson = ({ setSponsoredCount }) => {
     const [searchParams, setSearchParams] = useSearchParams();
     const [buttonPopup, setButtonPopup] = useState(false);
     const [selectedChild, setSelectedChild] = useState(null);
@@ -13,7 +13,7 @@ const OnePerson = () => {
         "By sponsoring this gift, you can help fulfill a simple wish and bring joy to a child's life.",
         "Every gift, no matter the size, helps us build a brighter future for these children. Please consider sponsoring this wish today."
     ];
-
+    
     const GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSebsT2-5oo1xJ0Ew4at-m9GfIran5wO76jUljI-3qH9xmCS5A/viewform";
     const CHILD_NAME_ENTRY_ID = "1246970301";
 
@@ -25,8 +25,10 @@ const OnePerson = () => {
                 const childrenList = data.data;
                 setChildren(childrenList);
                 setLoading(false);
+
                 const personId = searchParams.get('id');
                 const foundChild = childrenList.find(child => child.id === personId);
+
                 if (foundChild) {
                     setSelectedChild(foundChild);
                 } else if (childrenList.length > 0) {
@@ -48,22 +50,36 @@ const OnePerson = () => {
     };
 
     const handleCheckboxChange = async (personId) => {
-        if (selectedChild.sponsored === 1) {
+        if (!selectedChild || selectedChild.sponsored === 1) {
             return;
         }
+
         try {
             const newSponsoredStatus = 1;
-            await fetch(`${process.env.REACT_APP_API_URL}/api/needs/${personId}`, {
+
+            // Optimistic UI update.
+            setSelectedChild({ ...selectedChild, sponsored: newSponsoredStatus });
+            setSponsoredCount(prevCount => prevCount + 1);
+
+            // API call to update the backend.
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/needs/${personId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({ sponsored: newSponsoredStatus })
             });
+
+            if (!response.ok) {
+                throw new Error('Failed to update sponsorship status on the server.');
+            }
+
             console.log(`Updated personId: ${personId} as sponsored status: ${newSponsoredStatus}.`);
-            setSelectedChild({ ...selectedChild, sponsored: newSponsoredStatus });
         } catch (error) {
             console.error("Failed to update sponsorship status:", error);
+            // Rollback the local and global state if the API call fails.
+            setSelectedChild({ ...selectedChild, sponsored: 0 });
+            setSponsoredCount(prevCount => prevCount - 1);
         }
     };
 
@@ -87,35 +103,27 @@ const OnePerson = () => {
         }
     };
 
-    const getMobilePageNumbers = () => {
-        if (!selectedChild || children.length === 0) return [];
-        const currentIndex = children.findIndex(child => child.id === selectedChild.id);
-        const currentPage = currentIndex + 1;
-        const totalPages = children.length;
+    const generatePageNumbers = (currentIndex, totalItems) => {
         const pageNumbers = [];
+        const totalPages = totalItems;
+        const currentPage = currentIndex + 1;
 
-        if (totalPages <= 5) {
-            for (let i = 1; i <= totalPages; i++) {
-                pageNumbers.push(i);
-            }
-        } else {
-            pageNumbers.push(1);
-            if (currentPage > 3) {
-                pageNumbers.push('...');
-            }
-            let start = Math.max(2, currentPage - 1);
-            let end = Math.min(totalPages - 1, currentPage + 1);
-            for (let i = start; i <= end; i++) {
-                pageNumbers.push(i);
-            }
-            if (currentPage < totalPages - 2) {
-                pageNumbers.push('...');
-            }
-            if (!pageNumbers.includes(totalPages)) {
-                pageNumbers.push(totalPages);
-            }
+        pageNumbers.push(1);
+        if (currentPage > 3) {
+            pageNumbers.push('...');
         }
-        return pageNumbers;
+        let startPage = Math.max(2, currentPage - 1);
+        let endPage = Math.min(totalPages - 1, currentPage + 1);
+        for (let i = startPage; i <= endPage; i++) {
+            pageNumbers.push(i);
+        }
+        if (currentPage < totalPages - 2) {
+            pageNumbers.push('...');
+        }
+        if (totalPages > 1) {
+            pageNumbers.push(totalPages);
+        }
+        return [...new Set(pageNumbers)];
     };
 
     const getRandomStatement = () => {
@@ -176,7 +184,7 @@ const OnePerson = () => {
                 <button onClick={goToPrevPage} disabled={currentIndex === 0}>
                     &lt;
                 </button>
-                {getMobilePageNumbers().map((page, index) => (
+                {generatePageNumbers(currentIndex, children.length).map((page, index) => (
                     <React.Fragment key={index}>
                         {page === '...' ? (
                             <span>...</span>
