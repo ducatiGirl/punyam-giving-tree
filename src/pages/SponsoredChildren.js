@@ -49,6 +49,10 @@ const SponsoredChildren = () => {
                         <div className="fulfilled-message">
                             <h3 className="text-green-600 font-bold">{child.name}'s wish has been fulfilled!</h3>
                             <p>Sponsored by a member of the Punyam community.</p>
+                            {/* This is the new part: The story */}
+                            {child.story && child.story !== 'N/A' && (
+                                <p className="story-text">**My Story:** {child.story}</p>
+                            )}
                         </div>
                     </div>
                 ))}
