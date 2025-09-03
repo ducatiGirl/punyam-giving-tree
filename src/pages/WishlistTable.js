@@ -1,46 +1,47 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
-const WishlistTable = ({ sponsoredCount, updateSponsoredCount }) => {
+const WishlistTable = () => {
+    // Initializing the counter to 0. It will be immediately updated from the API.
+    const [sponsoredCount, setSponsoredCount] = useState(0);
     const [children, setChildren] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const [loading, setLoading] = useState(true);
-    const [displayedCount, setDisplayedCount] = useState(0); // This state is for the animation
-
     const itemsPerPage = 10;
+    const [loading, setLoading] = useState(true);
+
     const GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSebsT2-5oo1xJ0Ew4at-m9GfIran5wO76jUljI-3qH9xmCS5A/viewform";
     const CHILD_NAME_ENTRY_ID = "1246970301";
 
-    // This useEffect will run the animation whenever the sponsoredCount prop changes
-    useEffect(() => {
+    const animateCount = (initialCount) => {
         const duration = 2000;
-        const start = displayedCount;
-        const end = sponsoredCount;
-        let startTime = null;
+        const stepTime = 20;
+        const totalSteps = duration / stepTime;
+        const increment = initialCount / totalSteps;
 
-        const animate = (timestamp) => {
-            if (!startTime) startTime = timestamp;
-            const elapsed = timestamp - startTime;
-            const progress = Math.min(elapsed / duration, 1);
-            const animatedValue = Math.floor(start + progress * (end - start));
-            setDisplayedCount(animatedValue);
-
-            if (progress < 1) {
-                requestAnimationFrame(animate);
+        let currentCount = 0;
+        const timer = setInterval(() => {
+            currentCount += increment;
+            if (currentCount >= initialCount) {
+                clearInterval(timer);
+                setSponsoredCount(initialCount);
+            } else {
+                setSponsoredCount(Math.ceil(currentCount));
             }
-        };
+        }, stepTime);
+        return () => clearInterval(timer);
+    };
 
-        requestAnimationFrame(animate);
-    }, [sponsoredCount]);
-
+    // This useEffect is now a single, reliable source of truth.
+    // It always fetches all data and the current sponsored count from the server.
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await fetch(process.env.REACT_APP_API_URL + '/api/needs');
                 const data = await response.json();
                 setChildren(data.data);
+                
                 const sponsoredChildrenCount = data.data.filter(child => child.sponsored).length;
-                updateSponsoredCount(sponsoredChildrenCount);
+                setSponsoredCount(sponsoredChildrenCount);
                 setLoading(false);
             } catch (error) {
                 console.error("Failed to fetch data:", error);
@@ -48,7 +49,7 @@ const WishlistTable = ({ sponsoredCount, updateSponsoredCount }) => {
             }
         };
         fetchData();
-    }, [updateSponsoredCount]);
+    }, []);
 
     const handleCheckboxChange = async (id) => {
         try {
@@ -57,7 +58,8 @@ const WishlistTable = ({ sponsoredCount, updateSponsoredCount }) => {
                     child.id === id ? { ...child, sponsored: true } : child
                 )
             );
-            updateSponsoredCount(sponsoredCount + 1);
+            
+            setSponsoredCount(prevCount => prevCount + 1);
 
             await fetch(`${process.env.REACT_APP_API_URL}/api/needs/${id}`, {
                 method: 'PUT',
@@ -65,6 +67,7 @@ const WishlistTable = ({ sponsoredCount, updateSponsoredCount }) => {
                 body: JSON.stringify({ sponsored: true })
             });
             console.log(`Updated id: ${id} as sponsored.`);
+
         } catch (error) {
             console.error("Failed to update sponsorship status:", error);
             setChildren(prevChildren =>
@@ -72,7 +75,7 @@ const WishlistTable = ({ sponsoredCount, updateSponsoredCount }) => {
                     child.id === id ? { ...child, sponsored: false } : child
                 )
             );
-            updateSponsoredCount(sponsoredCount - 1);
+            setSponsoredCount(prevCount => prevCount - 1);
         }
     };
 
@@ -116,7 +119,7 @@ const WishlistTable = ({ sponsoredCount, updateSponsoredCount }) => {
     return (
         <>
             <div className="sponsored-count-display">
-                <h2>We have already sponsored {displayedCount} children!</h2>
+                <h2>We have already sponsored {sponsoredCount} children!</h2>
             </div>
             <div className="giving-tree-container">
                 {currentItems.map((child) => {
