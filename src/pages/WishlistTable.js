@@ -8,10 +8,9 @@ const WishlistTable = () => {
     const [children, setChildren] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [sponsoredCount, setSponsoredCount] = useState(0);
-    const itemsPerPage = 9;
+    const itemsPerPage = 10;
     const [loading, setLoading] = useState(true);
 
-    // Use the base URL and the entry ID for the child's name only
     const GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSebsT2-5oo1xJ0Ew4at-m9GfIran5wO76jUljI-3qH9xmCS5A/viewform";
     const CHILD_NAME_ENTRY_ID = "1246970301";
 
@@ -36,7 +35,6 @@ const WishlistTable = () => {
 
     useEffect(() => {
         const storedCount = localStorage.getItem('sponsoredCount');
-
         if (storedCount) {
             const initialCount = parseInt(storedCount, 10);
             animateCount(initialCount);
@@ -74,20 +72,17 @@ const WishlistTable = () => {
                     child.id === id ? { ...child, sponsored: true } : child
                 )
             );
-            
             setSponsoredCount(prevCount => {
                 const newCount = prevCount + 1;
                 localStorage.setItem('sponsoredCount', newCount);
                 return newCount;
             });
-
             await fetch(`${process.env.REACT_APP_API_URL}/api/needs/${id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ sponsored: true })
             });
             console.log(`Updated id: ${id} as sponsored.`);
-
         } catch (error) {
             console.error("Failed to update sponsorship status:", error);
             setChildren(prevChildren =>
@@ -104,7 +99,6 @@ const WishlistTable = () => {
     };
 
     const handleSponsorClick = (child) => {
-        // Pre-fill only the child's name
         const prefilledUrl = `${GOOGLE_FORM_URL}?usp=pp_url&entry.${CHILD_NAME_ENTRY_ID}=${encodeURIComponent(child.name)}`;
         window.open(prefilledUrl, '_blank');
     };
@@ -117,29 +111,31 @@ const WishlistTable = () => {
     const nextPage = () => setCurrentPage(prevPage => Math.min(prevPage + 1, totalPages));
     const prevPage = () => setCurrentPage(prevPage => Math.max(prevPage - 1, 1));
     
-    const generatePageNumbers = (currentPage, totalPages) => {
+    // New function for mobile-friendly pagination
+    const getMobilePageNumbers = () => {
         const pageNumbers = [];
-        pageNumbers.push(1);
-
-        if (currentPage > 3) {
-            pageNumbers.push('...');
+        if (totalPages <= 5) {
+            for (let i = 1; i <= totalPages; i++) {
+                pageNumbers.push(i);
+            }
+        } else {
+            pageNumbers.push(1);
+            if (currentPage > 3) {
+                pageNumbers.push('...');
+            }
+            let start = Math.max(2, currentPage - 1);
+            let end = Math.min(totalPages - 1, currentPage + 1);
+            for (let i = start; i <= end; i++) {
+                pageNumbers.push(i);
+            }
+            if (currentPage < totalPages - 2) {
+                pageNumbers.push('...');
+            }
+            if (!pageNumbers.includes(totalPages)) {
+                pageNumbers.push(totalPages);
+            }
         }
-
-        let startPage = Math.max(2, currentPage - 1);
-        let endPage = Math.min(totalPages - 1, currentPage + 1);
-
-        for (let i = startPage; i <= endPage; i++) {
-            pageNumbers.push(i);
-        }
-
-        if (currentPage < totalPages - 2) {
-            pageNumbers.push('...');
-        }
-
-        if (totalPages > 1) {
-            pageNumbers.push(totalPages);
-        }
-        return [...new Set(pageNumbers)];
+        return pageNumbers;
     };
 
     if (loading) {
@@ -208,7 +204,7 @@ const WishlistTable = () => {
                 <button onClick={prevPage} disabled={currentPage === 1}>
                     &lt;
                 </button>
-                {generatePageNumbers(currentPage, totalPages).map((page, index) => (
+                {getMobilePageNumbers().map((page, index) => (
                     <React.Fragment key={index}>
                         {page === '...' ? (
                             <span>...</span>
