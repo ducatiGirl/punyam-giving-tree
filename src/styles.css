@@ -256,4 +256,8 @@ body {
 .sponsored-count-display {
     text-align: center;
     font-size: 1.5em;
-    font-weight: bold
+    font-weight: bold;
+    margin-bottom: 1px;
+    padding: 1px;
+    border-radius: 8px;
+}
