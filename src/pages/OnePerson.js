@@ -82,4 +82,131 @@ const OnePerson = () => {
     const goToPrevPage = () => {
         if (selectedChild) {
             const currentIndex = children.findIndex(child => child.id === selectedChild.id);
-            if (currentIndex
+            if (currentIndex > 0) {
+                const prevChild = children[currentIndex - 1];
+                setSearchParams({ id: prevChild.id });
+            }
+        }
+    };
+
+    // This function is for the new, mobile-friendly pagination.
+    const getMobilePageNumbers = () => {
+        if (!selectedChild || children.length === 0) return [];
+        const currentIndex = children.findIndex(child => child.id === selectedChild.id);
+        const currentPage = currentIndex + 1;
+        const totalPages = children.length;
+        const pageNumbers = [];
+
+        if (totalPages <= 5) {
+            for (let i = 1; i <= totalPages; i++) {
+                pageNumbers.push(i);
+            }
+        } else {
+            pageNumbers.push(1);
+            if (currentPage > 3) {
+                pageNumbers.push('...');
+            }
+            let start = Math.max(2, currentPage - 1);
+            let end = Math.min(totalPages - 1, currentPage + 1);
+            for (let i = start; i <= end; i++) {
+                pageNumbers.push(i);
+            }
+            if (currentPage < totalPages - 2) {
+                pageNumbers.push('...');
+            }
+            if (!pageNumbers.includes(totalPages)) {
+                pageNumbers.push(totalPages);
+            }
+        }
+        return pageNumbers;
+    };
+
+    const getRandomStatement = () => {
+        const randomIndex = Math.floor(Math.random() * compellingStatements.length);
+        return compellingStatements[randomIndex];
+    };
+
+    if (loading || !selectedChild) {
+        return <div className="loading-state">Loading...</div>;
+    }
+
+    const currentIndex = children.findIndex(child => child.id === selectedChild.id);
+    const isSponsored = selectedChild.sponsored === 1;
+
+    return (
+        <div className="giving-tree-no-container">
+            <div className="child-no-card">
+                <div className="one-child-details">
+                    <p className="intro-text">Hi, my name is {selectedChild.name}. I am a student at {selectedChild.schoolName}.</p>
+                    {selectedChild.story && selectedChild.story !== 'N/A' && (
+                        <p className="story-text">My story: {selectedChild.story}</p>
+                    )}
+                    <div className="wishlist-info">
+                        <p>This season, my wish is for {selectedChild.category}.</p>
+                        <p>The price is ${selectedChild.cost}.</p>
+                    </div>
+                    <p className="compelling-statement">
+                        {!isSponsored ? getRandomStatement() : "Thank you for your kindness!"}
+                    </p>
+                </div>
+                {isSponsored ? (
+                    <div className="text-center mt-8 text-green-600 font-bold text-lg">
+                        This child's wishlist has been happily fulfilled!
+                    </div>
+                ) : (
+                    <div className="button-group">
+                        <button
+                            className="sponsor-button"
+                            onClick={() => handleSponsorClick(selectedChild)}
+                            disabled={isSponsored}
+                        >
+                            Sponsor {selectedChild.name}'s Wishlist
+                        </button>
+                        <div className="sponsorship-checkbox">
+                            <input
+                                type="checkbox"
+                                id={`sponsored-${selectedChild.id}`}
+                                checked={isSponsored}
+                                onChange={() => handleCheckboxChange(selectedChild.id)}
+                                disabled={isSponsored}
+                            />
+                            <label htmlFor={`sponsored-${selectedChild.id}`}>I have sponsored this wish.</label>
+                        </div>
+                    </div>
+                )}
+            </div>
+            <div className="pagination-controls">
+                <button onClick={goToPrevPage} disabled={currentIndex === 0}>
+                    &lt;
+                </button>
+                {getMobilePageNumbers().map((page, index) => (
+                    <React.Fragment key={index}>
+                        {page === '...' ? (
+                            <span>...</span>
+                        ) : (
+                            <button
+                                className={(currentIndex + 1) === page ? 'active' : ''}
+                                onClick={() => setSearchParams({ id: children[page - 1].id })}
+                            >
+                                {page}
+                            </button>
+                        )}
+                    </React.Fragment>
+                ))}
+                <button onClick={goToNextPage} disabled={currentIndex === children.length - 1}>
+                    &gt;
+                </button>
+            </div>
+            <Popup trigger={buttonPopup} setTrigger={setButtonPopup}>
+                {selectedChild && (
+                    <>
+                        <h3>My Popup</h3>
+                        <p>This is the paying link for {selectedChild.name}</p>
+                    </>
+                )}
+            </Popup>
+        </div>
+    );
+};
+
+export default OnePerson;
