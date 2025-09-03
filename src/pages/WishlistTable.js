@@ -8,7 +8,7 @@ const WishlistTable = () => {
     const [children, setChildren] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [sponsoredCount, setSponsoredCount] = useState(0);
-    const itemsPerPage = 10;
+    const itemsPerPage = 9;
     const [loading, setLoading] = useState(true);
 
     const GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSebsT2-5oo1xJ0Ew4at-m9GfIran5wO76jUljI-3qH9xmCS5A/viewform";
@@ -33,9 +33,16 @@ const WishlistTable = () => {
         return () => clearInterval(timer);
     };
 
-    // The key change is in this useEffect hook.
-    // It now fetches the latest data on load and updates the count and local storage.
+    // The key changes are in this useEffect hook.
     useEffect(() => {
+        const storedCount = localStorage.getItem('sponsoredCount');
+
+        if (storedCount) {
+            // If a count exists in local storage, start the animation from there
+            const initialCount = parseInt(storedCount, 10);
+            setSponsoredCount(initialCount);
+        }
+
         const fetchData = async () => {
             try {
                 const response = await fetch(process.env.REACT_APP_API_URL + '/api/needs');
@@ -43,7 +50,12 @@ const WishlistTable = () => {
                 setChildren(data.data);
                 const initialSponsored = data.data.filter(child => child.sponsored).length;
                 localStorage.setItem('sponsoredCount', initialSponsored);
-                animateCount(initialSponsored);
+                
+                // Animate the count from the current state to the new fetched count
+                const startCount = storedCount ? parseInt(storedCount, 10) : 0;
+                setSponsoredCount(startCount); // Set the starting count for the animation
+                animateCount(initialSponsored); // Animate to the final count
+
                 setLoading(false);
             } catch (error) {
                 console.error("Failed to fetch data:", error);
@@ -52,7 +64,7 @@ const WishlistTable = () => {
         };
 
         fetchData();
-    }, []); // Empty dependency array ensures this runs once on component mount
+    }, []);
 
     const handleCheckboxChange = async (id) => {
         try {
