@@ -3,11 +3,17 @@ import Popup from '../components/Popup';
 import { Link } from 'react-router-dom';
 
 const WishlistTable = () => {
+    // The key change is on this line:
+    // It now gets its initial value directly from localStorage.
+    const [sponsoredCount, setSponsoredCount] = useState(() => {
+        const storedCount = localStorage.getItem('sponsoredCount');
+        return storedCount ? parseInt(storedCount, 10) : 0;
+    });
+
     const [buttonPopup, setButtonPopup] = useState(false);
     const [selectedChild, setSelectedChild] = useState(null);
     const [children, setChildren] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const [sponsoredCount, setSponsoredCount] = useState(0);
     const itemsPerPage = 9;
     const [loading, setLoading] = useState(true);
 
@@ -33,28 +39,18 @@ const WishlistTable = () => {
         return () => clearInterval(timer);
     };
 
-    // The key changes are in this useEffect hook.
+    // The useEffect hook is now simplified.
+    // It only needs to fetch the data to get the definitive count.
     useEffect(() => {
-        const storedCount = localStorage.getItem('sponsoredCount');
-
-        if (storedCount) {
-            // If a count exists in local storage, start the animation from there
-            const initialCount = parseInt(storedCount, 10);
-            setSponsoredCount(initialCount);
-        }
-
         const fetchData = async () => {
             try {
                 const response = await fetch(process.env.REACT_APP_API_URL + '/api/needs');
                 const data = await response.json();
                 setChildren(data.data);
-                const initialSponsored = data.data.filter(child => child.sponsored).length;
-                localStorage.setItem('sponsoredCount', initialSponsored);
                 
-                // Animate the count from the current state to the new fetched count
-                const startCount = storedCount ? parseInt(storedCount, 10) : 0;
-                setSponsoredCount(startCount); // Set the starting count for the animation
-                animateCount(initialSponsored); // Animate to the final count
+                const finalCount = data.data.filter(child => child.sponsored).length;
+                localStorage.setItem('sponsoredCount', finalCount);
+                setSponsoredCount(finalCount);
 
                 setLoading(false);
             } catch (error) {
@@ -73,11 +69,14 @@ const WishlistTable = () => {
                     child.id === id ? { ...child, sponsored: true } : child
                 )
             );
+            
+            // This is still a good optimistic update.
             setSponsoredCount(prevCount => {
                 const newCount = prevCount + 1;
                 localStorage.setItem('sponsoredCount', newCount);
                 return newCount;
             });
+
             await fetch(`${process.env.REACT_APP_API_URL}/api/needs/${id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
