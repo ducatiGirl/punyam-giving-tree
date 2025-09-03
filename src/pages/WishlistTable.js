@@ -3,8 +3,8 @@ import Popup from '../components/Popup';
 import { Link } from 'react-router-dom';
 
 const WishlistTable = () => {
-    // The key change is on this line:
-    // It now gets its initial value directly from localStorage.
+    // THIS IS THE MOST IMPORTANT CHANGE:
+    // The initial state for sponsoredCount is now set directly from localStorage.
     const [sponsoredCount, setSponsoredCount] = useState(() => {
         const storedCount = localStorage.getItem('sponsoredCount');
         return storedCount ? parseInt(storedCount, 10) : 0;
@@ -39,8 +39,7 @@ const WishlistTable = () => {
         return () => clearInterval(timer);
     };
 
-    // The useEffect hook is now simplified.
-    // It only needs to fetch the data to get the definitive count.
+    // The useEffect hook is now simplified to only fetch data and update the state.
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -51,7 +50,6 @@ const WishlistTable = () => {
                 const finalCount = data.data.filter(child => child.sponsored).length;
                 localStorage.setItem('sponsoredCount', finalCount);
                 setSponsoredCount(finalCount);
-
                 setLoading(false);
             } catch (error) {
                 console.error("Failed to fetch data:", error);
@@ -70,7 +68,6 @@ const WishlistTable = () => {
                 )
             );
             
-            // This is still a good optimistic update.
             setSponsoredCount(prevCount => {
                 const newCount = prevCount + 1;
                 localStorage.setItem('sponsoredCount', newCount);
