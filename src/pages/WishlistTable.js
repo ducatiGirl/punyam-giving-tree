@@ -11,6 +11,11 @@ const WishlistTable = () => {
     const itemsPerPage = 10;
     const [loading, setLoading] = useState(true);
 
+    // Replace these with your actual Google Form values
+    const GOOGLE_FORM_URL = "https://forms.gle/5JEU3oFSmHpgWuo86";
+    const CHILD_NAME_ENTRY_ID = "666984856";
+    const CHILD_ID_ENTRY_ID = "1246970301";
+
     const animateCount = (initialCount) => {
         const duration = 2000;
         const stepTime = 20;
@@ -36,7 +41,6 @@ const WishlistTable = () => {
         if (storedCount) {
             const initialCount = parseInt(storedCount, 10);
             animateCount(initialCount);
-            // Fetch data in the background to keep the child list updated
             fetch(process.env.REACT_APP_API_URL + '/api/needs')
                 .then(response => response.json())
                 .then(data => {
@@ -48,7 +52,6 @@ const WishlistTable = () => {
                     setLoading(false);
                 });
         } else {
-            // First visit or localStorage is cleared
             fetch(process.env.REACT_APP_API_URL + '/api/needs')
                 .then(response => response.json())
                 .then(data => {
@@ -102,8 +105,8 @@ const WishlistTable = () => {
     };
 
     const handleSponsorClick = (child) => {
-        setSelectedChild(child);
-        setButtonPopup(true);
+        const prefilledUrl = `${GOOGLE_FORM_URL}?usp=pp_url&entry.${CHILD_NAME_ENTRY_ID}=${encodeURIComponent(child.name)}&entry.${CHILD_ID_ENTRY_ID}=${encodeURIComponent(child.id)}`;
+        window.open(prefilledUrl, '_blank');
     };
 
     const indexOfLastItem = currentPage * itemsPerPage;
