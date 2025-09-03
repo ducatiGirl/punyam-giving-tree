@@ -1,285 +1,259 @@
-*{
+/* Universal and Base Styles */
+* {
     box-sizing: border-box;
 }
-body{
-    margin:0;
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
 }
 
 .container {
     margin: 1rem;
     text-align: left;
-    font-size:2cap
+    font-size: 1rem; /* Use a standard unit for body text */
 }
-.nav{
+
+/* --- Navigation Bar --- */
+/* Your current nav is okay, but this makes it responsive for small screens */
+.nav {
     background-color: #333;
     color: white;
-    display:flex;
+    display: flex;
+    flex-direction: row; /* Default for desktop */
     justify-content: space-between;
-    align-items:stretch;
-    gap: 2rem;
+    align-items: center;
     padding: 0 1rem;
+    flex-wrap: wrap; /* Allows items to wrap on smaller screens */
 }
-.site-title{
+
+.site-title {
     font-size: 2rem;
+    padding: 0.5rem 0;
 }
-.nav ul{
+
+.nav ul {
     padding: 0;
     margin: 0;
     list-style: none;
     display: flex;
     gap: 1rem;
-
+    flex-wrap: wrap;
+    justify-content: flex-end; /* Aligns links to the right */
 }
 
 .nav a {
     color: inherit;
     text-decoration: none;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    padding: .25rem;
-
+    padding: .5rem 1rem; /* Adjust padding for better touch targets */
+    display: block; /* Make the whole link clickable */
 }
+
 .nav li.active {
     background-color: #555;
 }
-.nav li:hover{
+
+.nav li:hover {
     background-color: #777;
 }
-table {
-    width: 100%;
-    border-collapse: collapse; /* Makes borders continuous */
+
+/* --- About Page Styles (using a new class) --- */
+.about-content {
+    padding: 2rem;
+    max-width: 800px;
+    margin: 0 auto;
+    line-height: 1.6;
 }
 
-th, td {
-    border: 1px solid black;
-    padding: 8px;
-    text-align: left;
+.about-content h2.about-heading {
+    color: darkgreen;
+    font-size: 2.2rem;
+    margin-top: 2rem;
 }
+
+.about-content h2.how-it-works-heading {
+    color: #651111;
+    font-size: 2.2rem;
+    margin-top: 2rem;
+}
+
+.about-content h2.purpose-heading {
+    color: rgb(25, 16, 120);
+    font-size: 2.2rem;
+    margin-top: 2rem;
+}
+
+/* --- Wishlist Table Styles --- */
 .giving-tree-container {
-  display: grid; /* Use grid to create the two-column layout */
-  grid-template-columns: 1fr 1fr; /* Creates two columns of equal width */
-  gap: 20px; /* Adds space between grid items */
-  padding: 20px;
-  background-color: #f0f2f5; 
-  max-width: 800px; /* Adjust this to control the overall width */
-  margin: 0 auto; /* Center the grid container on the page */
+    max-width: 1200px; /* Increased max-width for better desktop display */
+    margin: 20px auto;
+    padding: 0 15px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
 }
 
 .child-card {
-  background-color: #fff;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  text-align: left;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.2s ease-in-out;
+}
+
+.child-card:hover {
+    transform: translateY(-5px);
 }
 
 .child-header h3 {
-  font-size: 1.5em;
-  color: #333;
-  margin-bottom: 10px;
+    font-size: 1.5em;
+    color: #333;
+    margin-bottom: 10px;
 }
 
 .child-details {
-  margin-bottom: 20px;
+    margin-bottom: 20px;
 }
 
 .child-details p {
-  margin: 5px 0;
-  color: #666;
+    margin: 5px 0;
+    color: #666;
 }
 
 .child-details strong {
-  color: #000;
+    color: #000;
 }
 
 .button-group {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .sponsor-button {
-  padding: 12px 20px;
-  border: none;
-  border-radius: 5px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    background-color: #007bff; /* Blue */
+    color: #fff;
 }
-
-.sponsor-button {
-  background-color: #007bff; /* Blue */
-  color: #fff;
-}
-
-
 
 .sponsor-button:hover {
-  background-color: #0056b3;
+    background-color: #0056b3;
+}
+
+.sponsorship-checkbox {
+    margin-top: 10px;
 }
 
 .pagination-controls {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 20px;
-  margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin-top: 20px;
 }
 
 .pagination-controls button {
-  padding: 10px 15px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  background-color: #fff;
-  cursor: pointer;
+    padding: 10px 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    cursor: pointer;
 }
 
 .pagination-controls button:disabled {
-  background-color: #f0f0f0;
-  color: #a0a0a0;
-  cursor: not-allowed;
+    background-color: #f0f0f0;
+    color: #a0a0a0;
+    cursor: not-allowed;
+}
+
+/* --- Home Page Styles --- */
+.home-container {
+    padding: 20px;
+    text-align: center;
+}
+
+.home-container h1 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
 }
 
 .image-container {
-  position: relative;
-  display: block; /* Use block to center the entire container */
-  margin: 0 auto; /* This centers the container horizontally on the page */
-  width: 40%;
+    position: relative;
+    max-width: 800px; /* Limits the tree image size on very large screens */
+    margin: 0 auto;
 }
 
 .mango-tree-img {
-  width: 100%; /* Make the image fill its new container */
-  height: auto; /* Maintain aspect ratio */
+    width: 100%;
+    height: auto;
 }
 
 .mango-icon {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 1;
+    position: absolute;
+    transform: translate(-50%, -50%); /* Centers the mango icon on its coordinate */
+    z-index: 1;
 }
 
+/* --- One Person Page Styles --- */
 .giving-tree-no-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  padding: 2rem;
-  background-color: #f0f4f8; /* A soft, light-blue background */
-  font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 2rem;
+    background-color: #f0f4f8;
+    font-family: Arial, sans-serif;
 }
+
 .child-no-card {
-  background-color: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  padding: 3rem 2.5rem;
-  width: 100%;
-  max-width: 600px;
-  text-align: center;
-  margin-bottom: 2rem;
-  transition: transform 0.3s ease-in-out;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    padding: 3rem 2.5rem;
+    width: 100%;
+    max-width: 600px;
+    text-align: center;
+    margin-bottom: 2rem;
+    transition: transform 0.3s ease-in-out;
 }
 
 .child-no-card:hover {
-  transform: translateY(-5px);
+    transform: translateY(-5px);
 }
+
 .one-child-details p {
-  line-height: 1.6;
-  font-size: 1.1rem;
-  color: #333;
-  margin-bottom: 1rem;
+    line-height: 1.6;
+    font-size: 1.1rem;
+    color: #333;
+    margin-bottom: 1rem;
 }
 
 .one-child-details p strong {
-  color: #007bff; /* A nice blue for emphasis */
+    color: #007bff;
 }
 
-/* Specific styles for the story text */
 .story-text {
-  font-style: italic;
-  color: #555;
-  border-left: 3px solid #007bff;
-  padding-left: 10px;
-  margin-top: 1.5rem;
-  margin-bottom: 1.5rem;
+    font-style: italic;
+    color: #555;
+    border-left: 3px solid #007bff;
+    padding-left: 10px;
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
 }
 
-.button-group {
-  margin-top: 2rem;
-}
-
-.sponsor-button {
-  background-color: #28a745; /* A vibrant green for action */
-  color: white;
-  border: none;
-  padding: 1rem 2rem;
-  border-radius: 50px;
-  font-size: 1.2rem;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.1s ease;
-}
-
-.sponsor-button:hover {
-  background-color: #218838;
-  transform: scale(1.02);
-}
-
-.pagination-controls {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 8px;
-  margin-top: 20px;
-}
-
-.pagination-controls button,
-.pagination-controls span {
-  width: 40px;
-  height: 40px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border: 1px solid #ccc;
-  background-color: white;
-  color: black;
-  cursor: pointer;
-  border-radius: 4px;
-  font-weight: bold;
-}
-
-.pagination-controls button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.pagination-controls button.active {
-  background-color: black;
-  color: white;
-  border-color: black;
-}
-
-.pagination-controls span {
-  border: none;
-  background-color: transparent;
-  cursor: default;
-}
-
-.pagination-controls button:not(.active):hover {
-  background-color: #f0f0f0;
-}
 .sponsored-count-display {
-  text-align: center;
-  font-size: 1.5em;
-  font-weight: bold;
-  margin-bottom: 1px;
-  padding: 1px;
-  border-radius: 8px;
-
-}
+    text-align: center;
+    font-size: 1.5em;
+    font-weight: bold
