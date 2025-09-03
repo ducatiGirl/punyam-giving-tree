@@ -5,7 +5,7 @@ const SponsoredChildren = () => {
     const [allSponsored, setAllSponsored] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [loading, setLoading] = useState(true);
-    const itemsPerPage = 10;
+    const itemsPerPage = 9;
 
     useEffect(() => {
         const fetchSponsored = async () => {
