@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import Popup from '../components/Popup';
 
-const OnePerson = ({ sponsoredCount, updateSponsoredCount }) => {
+const OnePerson = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const [buttonPopup, setButtonPopup] = useState(false);
     const [selectedChild, setSelectedChild] = useState(null);
@@ -62,7 +62,6 @@ const OnePerson = ({ sponsoredCount, updateSponsoredCount }) => {
             });
             console.log(`Updated personId: ${personId} as sponsored status: ${newSponsoredStatus}.`);
             setSelectedChild({ ...selectedChild, sponsored: newSponsoredStatus });
-            updateSponsoredCount(sponsoredCount + 1); // Increment the global count
         } catch (error) {
             console.error("Failed to update sponsorship status:", error);
         }
