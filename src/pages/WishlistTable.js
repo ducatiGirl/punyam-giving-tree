@@ -8,7 +8,7 @@ const WishlistTable = () => {
     const [children, setChildren] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [sponsoredCount, setSponsoredCount] = useState(0);
-    const itemsPerPage = 10;
+    const itemsPerPage = 9;
     const [loading, setLoading] = useState(true);
 
     // Use the base URL and the entry ID for the child's name only
