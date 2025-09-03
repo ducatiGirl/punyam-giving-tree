@@ -2,12 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 const WishlistTable = () => {
-    // Initializes state directly from localStorage to prevent the counter from resetting to 0.
-    const [sponsoredCount, setSponsoredCount] = useState(() => {
-        const storedCount = localStorage.getItem('sponsoredCount');
-        return storedCount ? parseInt(storedCount, 10) : 0;
-    });
-
+    // Initializing the counter to 0, which will be immediately updated from the API.
+    const [sponsoredCount, setSponsoredCount] = useState(0);
     const [children, setChildren] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
@@ -16,7 +12,26 @@ const WishlistTable = () => {
     const GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSebsT2-5oo1xJ0Ew4at-m9GfIran5wO76jUljI-3qH9xmCS5A/viewform";
     const CHILD_NAME_ENTRY_ID = "1246970301";
 
-    // This useEffect hook is now simplified and always fetches the latest data.
+    const animateCount = (initialCount) => {
+        const duration = 2000;
+        const stepTime = 20;
+        const totalSteps = duration / stepTime;
+        const increment = initialCount / totalSteps;
+
+        let currentCount = 0;
+        const timer = setInterval(() => {
+            currentCount += increment;
+            if (currentCount >= initialCount) {
+                clearInterval(timer);
+                setSponsoredCount(initialCount);
+            } else {
+                setSponsoredCount(Math.ceil(currentCount));
+            }
+        }, stepTime);
+        return () => clearInterval(timer);
+    };
+
+    // This useEffect now has a single, reliable purpose: fetch all data and the current count.
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -24,9 +39,8 @@ const WishlistTable = () => {
                 const data = await response.json();
                 setChildren(data.data);
                 
-                const finalCount = data.data.filter(child => child.sponsored).length;
-                localStorage.setItem('sponsoredCount', finalCount);
-                setSponsoredCount(finalCount);
+                const sponsoredChildrenCount = data.data.filter(child => child.sponsored).length;
+                setSponsoredCount(sponsoredChildrenCount);
                 setLoading(false);
             } catch (error) {
                 console.error("Failed to fetch data:", error);
@@ -44,12 +58,7 @@ const WishlistTable = () => {
                 )
             );
             
-            // Optimistic update for the counter and local storage
-            setSponsoredCount(prevCount => {
-                const newCount = prevCount + 1;
-                localStorage.setItem('sponsoredCount', newCount);
-                return newCount;
-            });
+            setSponsoredCount(prevCount => prevCount + 1);
 
             await fetch(`${process.env.REACT_APP_API_URL}/api/needs/${id}`, {
                 method: 'PUT',
@@ -60,17 +69,12 @@ const WishlistTable = () => {
 
         } catch (error) {
             console.error("Failed to update sponsorship status:", error);
-            // Revert changes if API call fails
             setChildren(prevChildren =>
                 prevChildren.map(child =>
                     child.id === id ? { ...child, sponsored: false } : child
                 )
             );
-            setSponsoredCount(prevCount => {
-                const newCount = prevCount - 1;
-                localStorage.setItem('sponsoredCount', newCount);
-                return newCount;
-            });
+            setSponsoredCount(prevCount => prevCount - 1);
         }
     };
 
