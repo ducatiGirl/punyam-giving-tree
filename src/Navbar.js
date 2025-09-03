@@ -7,6 +7,7 @@ export default function Navbar(){
             <CustomLink to="/About">About</CustomLink>
             <CustomLink to="/WishlistTable">Wishlist Table</CustomLink> 
             <CustomLink to="/OnePerson">One person</CustomLink>
+            <CustomLink to="/SponsoredChildren">Sponsored Children</CustomLink>
         </ul>
     </nav>
 }
