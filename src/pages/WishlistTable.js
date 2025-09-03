@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 const WishlistTable = () => {
-    // Initializing the counter to 0, which will be immediately updated from the API.
+    // Initializing the counter to 0. It will be immediately updated from the API.
     const [sponsoredCount, setSponsoredCount] = useState(0);
     const [children, setChildren] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
@@ -31,7 +31,8 @@ const WishlistTable = () => {
         return () => clearInterval(timer);
     };
 
-    // This useEffect now has a single, reliable purpose: fetch all data and the current count.
+    // This useEffect is now a single, reliable source of truth.
+    // It always fetches all data and the current sponsored count from the server.
     useEffect(() => {
         const fetchData = async () => {
             try {
