@@ -1,45 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import Popup from '../components/Popup';
 import { Link } from 'react-router-dom';
 
 const WishlistTable = () => {
-    // THIS IS THE MOST IMPORTANT CHANGE:
-    // The initial state for sponsoredCount is now set directly from localStorage.
+    // Initializes state directly from localStorage to prevent the counter from resetting to 0.
     const [sponsoredCount, setSponsoredCount] = useState(() => {
         const storedCount = localStorage.getItem('sponsoredCount');
         return storedCount ? parseInt(storedCount, 10) : 0;
     });
 
-    const [buttonPopup, setButtonPopup] = useState(false);
-    const [selectedChild, setSelectedChild] = useState(null);
     const [children, setChildren] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 9;
+    const itemsPerPage = 10;
     const [loading, setLoading] = useState(true);
 
     const GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSebsT2-5oo1xJ0Ew4at-m9GfIran5wO76jUljI-3qH9xmCS5A/viewform";
     const CHILD_NAME_ENTRY_ID = "1246970301";
 
-    const animateCount = (initialCount) => {
-        const duration = 2000;
-        const stepTime = 20;
-        const totalSteps = duration / stepTime;
-        const increment = initialCount / totalSteps;
-
-        let currentCount = 0;
-        const timer = setInterval(() => {
-            currentCount += increment;
-            if (currentCount >= initialCount) {
-                clearInterval(timer);
-                setSponsoredCount(initialCount);
-            } else {
-                setSponsoredCount(Math.ceil(currentCount));
-            }
-        }, stepTime);
-        return () => clearInterval(timer);
-    };
-
-    // The useEffect hook is now simplified to only fetch data and update the state.
+    // This useEffect hook is now simplified and always fetches the latest data.
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -56,7 +33,6 @@ const WishlistTable = () => {
                 setLoading(false);
             }
         };
-
         fetchData();
     }, []);
 
@@ -68,6 +44,7 @@ const WishlistTable = () => {
                 )
             );
             
+            // Optimistic update for the counter and local storage
             setSponsoredCount(prevCount => {
                 const newCount = prevCount + 1;
                 localStorage.setItem('sponsoredCount', newCount);
@@ -80,8 +57,10 @@ const WishlistTable = () => {
                 body: JSON.stringify({ sponsored: true })
             });
             console.log(`Updated id: ${id} as sponsored.`);
+
         } catch (error) {
             console.error("Failed to update sponsorship status:", error);
+            // Revert changes if API call fails
             setChildren(prevChildren =>
                 prevChildren.map(child =>
                     child.id === id ? { ...child, sponsored: false } : child
@@ -108,30 +87,24 @@ const WishlistTable = () => {
     const nextPage = () => setCurrentPage(prevPage => Math.min(prevPage + 1, totalPages));
     const prevPage = () => setCurrentPage(prevPage => Math.max(prevPage - 1, 1));
     
-    const getMobilePageNumbers = () => {
+    const generatePageNumbers = (currentPage, totalPages) => {
         const pageNumbers = [];
-        if (totalPages <= 5) {
-            for (let i = 1; i <= totalPages; i++) {
-                pageNumbers.push(i);
-            }
-        } else {
-            pageNumbers.push(1);
-            if (currentPage > 3) {
-                pageNumbers.push('...');
-            }
-            let start = Math.max(2, currentPage - 1);
-            let end = Math.min(totalPages - 1, currentPage + 1);
-            for (let i = start; i <= end; i++) {
-                pageNumbers.push(i);
-            }
-            if (currentPage < totalPages - 2) {
-                pageNumbers.push('...');
-            }
-            if (!pageNumbers.includes(totalPages)) {
-                pageNumbers.push(totalPages);
-            }
+        pageNumbers.push(1);
+        if (currentPage > 3) {
+            pageNumbers.push('...');
         }
-        return pageNumbers;
+        let startPage = Math.max(2, currentPage - 1);
+        let endPage = Math.min(totalPages - 1, currentPage + 1);
+        for (let i = startPage; i <= endPage; i++) {
+            pageNumbers.push(i);
+        }
+        if (currentPage < totalPages - 2) {
+            pageNumbers.push('...');
+        }
+        if (totalPages > 1) {
+            pageNumbers.push(totalPages);
+        }
+        return [...new Set(pageNumbers)];
     };
 
     if (loading) {
@@ -200,7 +173,7 @@ const WishlistTable = () => {
                 <button onClick={prevPage} disabled={currentPage === 1}>
                     &lt;
                 </button>
-                {getMobilePageNumbers().map((page, index) => (
+                {generatePageNumbers(currentPage, totalPages).map((page, index) => (
                     <React.Fragment key={index}>
                         {page === '...' ? (
                             <span>...</span>
@@ -218,14 +191,6 @@ const WishlistTable = () => {
                     &gt;
                 </button>
             </div>
-            <Popup trigger={buttonPopup} setTrigger={setButtonPopup}>
-                {selectedChild && (
-                    <>
-                        <h3>My Popup</h3>
-                        <p>This is the paying link for {selectedChild.name}</p>
-                    </>
-                )}
-            </Popup>
         </>
     );
 };
