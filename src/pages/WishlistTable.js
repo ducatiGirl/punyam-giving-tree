@@ -11,10 +11,9 @@ const WishlistTable = () => {
     const itemsPerPage = 10;
     const [loading, setLoading] = useState(true);
 
-    // Use the base URL you provided and the entry IDs
+    // Use the base URL and the entry ID for the child's name only
     const GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSebsT2-5oo1xJ0Ew4at-m9GfIran5wO76jUljI-3qH9xmCS5A/viewform";
     const CHILD_NAME_ENTRY_ID = "1246970301";
-    const CHILD_ID_ENTRY_ID = "666984856";
 
     const animateCount = (initialCount) => {
         const duration = 2000;
@@ -105,7 +104,8 @@ const WishlistTable = () => {
     };
 
     const handleSponsorClick = (child) => {
-        const prefilledUrl = `${GOOGLE_FORM_URL}?usp=pp_url&entry.${CHILD_NAME_ENTRY_ID}=${encodeURIComponent(child.name)}&entry.${CHILD_ID_ENTRY_ID}=${encodeURIComponent(child.id)}`;
+        // Pre-fill only the child's name
+        const prefilledUrl = `${GOOGLE_FORM_URL}?usp=pp_url&entry.${CHILD_NAME_ENTRY_ID}=${encodeURIComponent(child.name)}`;
         window.open(prefilledUrl, '_blank');
     };
 
