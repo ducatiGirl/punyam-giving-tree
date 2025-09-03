@@ -8,7 +8,7 @@ const WishlistTable = () => {
     const [children, setChildren] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [sponsoredCount, setSponsoredCount] = useState(0);
-    const itemsPerPage = 9;
+    const itemsPerPage = 10;
     const [loading, setLoading] = useState(true);
 
     const GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSebsT2-5oo1xJ0Ew4at-m9GfIran5wO76jUljI-3qH9xmCS5A/viewform";
@@ -33,37 +33,26 @@ const WishlistTable = () => {
         return () => clearInterval(timer);
     };
 
+    // The key change is in this useEffect hook.
+    // It now fetches the latest data on load and updates the count and local storage.
     useEffect(() => {
-        const storedCount = localStorage.getItem('sponsoredCount');
-        if (storedCount) {
-            const initialCount = parseInt(storedCount, 10);
-            animateCount(initialCount);
-            fetch(process.env.REACT_APP_API_URL + '/api/needs')
-                .then(response => response.json())
-                .then(data => {
-                    setChildren(data.data);
-                    setLoading(false);
-                })
-                .catch(error => {
-                    console.error("Failed to fetch data:", error);
-                    setLoading(false);
-                });
-        } else {
-            fetch(process.env.REACT_APP_API_URL + '/api/needs')
-                .then(response => response.json())
-                .then(data => {
-                    setChildren(data.data);
-                    setLoading(false);
-                    const initialSponsored = data.data.filter(child => child.sponsored).length;
-                    localStorage.setItem('sponsoredCount', initialSponsored);
-                    animateCount(initialSponsored);
-                })
-                .catch(error => {
-                    console.error("Failed to fetch data:", error);
-                    setLoading(false);
-                });
-        }
-    }, []);
+        const fetchData = async () => {
+            try {
+                const response = await fetch(process.env.REACT_APP_API_URL + '/api/needs');
+                const data = await response.json();
+                setChildren(data.data);
+                const initialSponsored = data.data.filter(child => child.sponsored).length;
+                localStorage.setItem('sponsoredCount', initialSponsored);
+                animateCount(initialSponsored);
+                setLoading(false);
+            } catch (error) {
+                console.error("Failed to fetch data:", error);
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+    }, []); // Empty dependency array ensures this runs once on component mount
 
     const handleCheckboxChange = async (id) => {
         try {
@@ -111,7 +100,6 @@ const WishlistTable = () => {
     const nextPage = () => setCurrentPage(prevPage => Math.min(prevPage + 1, totalPages));
     const prevPage = () => setCurrentPage(prevPage => Math.max(prevPage - 1, 1));
     
-    // New function for mobile-friendly pagination
     const getMobilePageNumbers = () => {
         const pageNumbers = [];
         if (totalPages <= 5) {
