@@ -8,7 +8,7 @@ const WishlistTable = () => {
     const [children, setChildren] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [sponsoredCount, setSponsoredCount] = useState(0);
-    const itemsPerPage = 10;
+    const itemsPerPage = 9;
     const [loading, setLoading] = useState(true);
 
     const GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSebsT2-5oo1xJ0Ew4at-m9GfIran5wO76jUljI-3qH9xmCS5A/viewform";
