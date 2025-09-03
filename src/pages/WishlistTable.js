@@ -129,7 +129,7 @@ const WishlistTable = ({ sponsoredCount, setSponsoredCount }) => {
             <div className="sponsored-count-display">
                 <h2>We have already sponsored {displayedCount} children!</h2>
                 <Link to={`/SponsoredChildren`}>
-                    <h3>Click here to find out more about these children</h3>
+                    <p>Click here to find out more about these children</p>
                 </Link>
             </div>
             <div className="giving-tree-container">
