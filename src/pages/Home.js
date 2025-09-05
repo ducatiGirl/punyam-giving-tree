@@ -7,7 +7,9 @@ const Home = () => {
   const [childrenWithPositions, setChildrenWithPositions] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  // This function fetches the data from the API
   const fetchChildren = () => {
+    setIsLoading(true); // Set loading state to true while fetching
     fetch(process.env.REACT_APP_API_URL + '/api/needs')
       .then(response => {
         if (!response.ok) {
@@ -34,12 +36,17 @@ const Home = () => {
   };
 
   useEffect(() => {
-    fetchChildren();
+    fetchChildren(); // Initial fetch when the component mounts
   }, []);
 
   return (
     <div>
       <h1>Welcome to the Full Story for a Mango Tree!</h1>
+
+      {/* Add a refresh button */}
+      <button onClick={fetchChildren} className="refresh-button">
+        Refresh Mango Tree
+      </button>
 
       <div className="image-container">
         <img className="mango-tree-img" src={img} alt="Mango Tree" />
