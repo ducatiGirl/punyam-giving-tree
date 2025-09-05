@@ -7,7 +7,7 @@ const WishlistTable = ({ sponsoredCount, setSponsoredCount }) => {
     const [loading, setLoading] = useState(true);
     const [displayedCount, setDisplayedCount] = useState(0);
 
-    const itemsPerPage = 10;
+    const itemsPerPage = 9;
     const GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSebsT2-5oo1xJ0Ew4at-m9GfIran5wO76jUljI-3qH9xmCS5A/viewform";
     const CHILD_NAME_ENTRY_ID = "1246970301";
 
