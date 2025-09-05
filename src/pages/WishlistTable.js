@@ -11,7 +11,6 @@ const WishlistTable = ({ sponsoredCount, setSponsoredCount }) => {
     const GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSebsT2-5oo1xJ0Ew4at-m9GfIran5wO76jUljI-3qH9xmCS5A/viewform";
     const CHILD_NAME_ENTRY_ID = "1246970301";
 
-    // This effect runs the animation whenever the sponsoredCount prop changes.
     useEffect(() => {
         const duration = 1000;
         const start = displayedCount;
@@ -36,6 +35,7 @@ const WishlistTable = ({ sponsoredCount, setSponsoredCount }) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
+                // CHANGED API ENDPOINT TO FETCH ONLY THE FIRST 30 ITEMS
                 const response = await fetch(process.env.REACT_APP_API_URL + '/api/needs');
                 const data = await response.json();
                 setChildren(data.data);
@@ -55,7 +55,6 @@ const WishlistTable = ({ sponsoredCount, setSponsoredCount }) => {
         }
 
         try {
-            // Optimistic UI update: update local and global state first.
             setChildren(prevChildren =>
                 prevChildren.map(child =>
                     child.id === id ? { ...child, sponsored: true } : child
@@ -63,7 +62,6 @@ const WishlistTable = ({ sponsoredCount, setSponsoredCount }) => {
             );
             setSponsoredCount(prevCount => prevCount + 1);
 
-            // API call to update the backend.
             const response = await fetch(`${process.env.REACT_APP_API_URL}/api/needs/${id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
@@ -77,7 +75,6 @@ const WishlistTable = ({ sponsoredCount, setSponsoredCount }) => {
             console.log(`Updated id: ${id} as sponsored.`);
         } catch (error) {
             console.error("Failed to update sponsorship status:", error);
-            // Rollback the local and global state if the API call fails.
             setChildren(prevChildren =>
                 prevChildren.map(child =>
                     child.id === id ? { ...child, sponsored: false } : child
@@ -154,7 +151,7 @@ const WishlistTable = ({ sponsoredCount, setSponsoredCount }) => {
                                         {child.story && child.story !== 'N/A' && (
                                             <p><strong>Story: </strong>{child.story}</p>
                                         )}
-                                        <p><strong>Wishlist:</strong> {child.category}</p>
+                                        <p><strong>Wishlist:</strong> {child.wishlist}</p>
                                         <p><strong>Price:</strong> ${child.cost}</p>
                                     </div>
                                 </>
