@@ -37,7 +37,6 @@ async function fetchAndPopulateDatabase() {
             const cost = parseFloat(row["03 Cost"]) || 0;
             const isSponsored = row["Sponsored?"] === "TRUE" ? 1 : 0;
 
-            // CORRECTED: Generate a truly unique ID by including the row index.
             const id = `${cost}-${name}-${index}`.replace(/\s/g, "");
             
             stmt.run(
@@ -103,7 +102,8 @@ async function startServer() {
   });
 
   app.get("/api/needs", (req, res) => {
-    db.all("SELECT * FROM full_story_for_mango_tree WHERE sponsored = 0 LIMIT 30", [], (err, rows) => {
+    // CORRECTED: Removed WHERE clause to return all 30 needs, sponsored or not.
+    db.all("SELECT * FROM full_story_for_mango_tree LIMIT 30", [], (err, rows) => {
       if (err) {
         res.status(400).json({ error: err.message });
         return;
