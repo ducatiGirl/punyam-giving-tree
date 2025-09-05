@@ -54,7 +54,7 @@ const Home = () => {
               
               <MangoIcon
                 color={isSponsored ? '#d72d2dff' : '#F4B400'}
-                size={30}
+                size={50}
                 className="mango-icon"
                 style={child.position}
               />
