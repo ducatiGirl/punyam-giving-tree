@@ -34,9 +34,9 @@ async function fetchAndPopulateDatabase() {
             const name = parts[0]?.trim() || "N/A";
             const story = parts.length > 1 ? parts.slice(1).join("--").trim() : "N/A";
             
-            // CORRECTED: Use '01 Category' and 'Cost' from the Full Requests data
-            const wishlist = row["01 Category \nPlease categorize the needs as Financial help, bicycle, phone, house repair, house bulding, phone, wheel chair"] || "N/A";
-            const cost = parseFloat(row["Cost"]) || 0;
+            // CORRECTED: Use '02 Category' and '03 Cost' from the Full Story data
+            const wishlist = row["02 Category \nPlease categorize the needs as Financial help, bicycle, phone, house repair, house building, phone, wheel chair"] || "N/A";
+            const cost = parseFloat(row["03 Cost"]) || 0;
             
             const isSponsored = row["Sponsored?"] === "TRUE" ? 1 : 0;
 
