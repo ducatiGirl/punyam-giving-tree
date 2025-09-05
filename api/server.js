@@ -8,7 +8,7 @@ app.use(cors());
 app.use(express.json());
 
 const GOOGLE_SHEET_API_URL =
-  "https://script.google.com/macros/s/AKfycbx0aMI9tRa5F3l1MTq3sAgdUFZWtbAKG1W7TCGf4KNwKD01Sv_ZKLZwl2esaCPjl0z6/exec";
+  "https://script.google.com/macros/s/AKfycbyayBW-UfQxXQMJI4Ih7wiskUrruPzxsHNr53IZZtsAntMKQdW2oGipDI7JjwnzOjA1bA/exec";
 
 async function fetchAndPopulateDatabase() {
   try {
@@ -27,7 +27,7 @@ async function fetchAndPopulateDatabase() {
             "INSERT INTO full_story_for_mango_tree VALUES (?, ?, ?, ?, ?, ?, ?)"
           );
           let completed = 0;
-          sheetData.data.forEach((row) => {
+          sheetData.data.forEach((row, index) => {
             const schoolName = row["00 School Name\n"]?.replace(/^\d+\s?/, "").trim() || "";
             const nameAndStory = row["01 Needs Details :\n"] || "";
             const parts = nameAndStory.split("--");
@@ -37,7 +37,9 @@ async function fetchAndPopulateDatabase() {
             const cost = parseFloat(row["03 Cost"]) || 0;
             const isSponsored = row["Sponsored?"] === "TRUE" ? 1 : 0;
 
-            const id = `${cost}-${name}`.replace(/\s/g, "");
+            // CORRECTED: Generate a truly unique ID by including the row index.
+            const id = `${cost}-${name}-${index}`.replace(/\s/g, "");
+            
             stmt.run(
               id,
               schoolName,
