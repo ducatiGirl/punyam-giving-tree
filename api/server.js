@@ -34,7 +34,7 @@ async function fetchAndPopulateDatabase() {
             const name = parts[0]?.trim() || "N/A";
             const story = parts.length > 1 ? parts.slice(1).join("--").trim() : "N/A";
             
-            // CORRECTED: Use '02 Category' and '03 Cost' from the Full Story data
+            // CORRECTED: Using the correct column headers from your Google Sheet
             const wishlist = row["02 Category \nPlease categorize the needs as Financial help, bicycle, phone, house repair, house building, phone, wheel chair"] || "N/A";
             const cost = parseFloat(row["03 Cost"]) || 0;
             
