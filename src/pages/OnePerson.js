@@ -20,7 +20,8 @@ const OnePerson = ({ setSponsoredCount }) => {
     useEffect(() => {
         const fetchDataAndSetChild = async () => {
             try {
-                const response = await fetch(process.env.REACT_APP_API_URL + '/api/all-needs');
+                // Fetch only the first 30 children from the API
+                const response = await fetch(process.env.REACT_APP_API_URL + '/api/needs');
                 const data = await response.json();
                 const childrenList = data.data;
                 setChildren(childrenList);
@@ -147,7 +148,8 @@ const OnePerson = ({ setSponsoredCount }) => {
                         <p className="story-text">My story: {selectedChild.story}</p>
                     )}
                     <div className="wishlist-info">
-                        <p>This season, my wish is for {selectedChild.category}.</p>
+                        {/* CORRECTED COLUMN NAME TO WISHLIST */}
+                        <p>This season, my wish is for {selectedChild.wishlist}.</p>
                         <p>The price is ${selectedChild.cost}.</p>
                     </div>
                     <p className="compelling-statement">
