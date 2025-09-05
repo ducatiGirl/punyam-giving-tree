@@ -33,8 +33,11 @@ async function fetchAndPopulateDatabase() {
             const parts = nameAndStory.split("--");
             const name = parts[0]?.trim() || "N/A";
             const story = parts.length > 1 ? parts.slice(1).join("--").trim() : "N/A";
-            const wishlist = row["02 Category \nPlease categorize the needs as Financial help, bicycle, phone, house repair, house building, phone, wheel chair"] || "N/A";
-            const cost = parseFloat(row["03 Cost"]) || 0;
+            
+            // CORRECTED: Use '01 Category' and 'Cost' from the Full Requests data
+            const wishlist = row["01 Category \nPlease categorize the needs as Financial help, bicycle, phone, house repair, house bulding, phone, wheel chair"] || "N/A";
+            const cost = parseFloat(row["Cost"]) || 0;
+            
             const isSponsored = row["Sponsored?"] === "TRUE" ? 1 : 0;
 
             const id = `${cost}-${name}-${index}`.replace(/\s/g, "");
@@ -102,7 +105,6 @@ async function startServer() {
   });
 
   app.get("/api/needs", (req, res) => {
-    // CORRECTED: Removed WHERE clause to return all 30 needs, sponsored or not.
     db.all("SELECT * FROM full_story_for_mango_tree LIMIT 30", [], (err, rows) => {
       if (err) {
         res.status(400).json({ error: err.message });
