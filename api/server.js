@@ -8,7 +8,7 @@ app.use(cors());
 app.use(express.json());
 
 const GOOGLE_SHEET_API_URL =
-  "https://script.google.com/macros/s/AKfycbyayBW-UfQxXQMJI4Ih7wiskUrruPzxsHNr53IZZtsAntMKQdW2oGipDI7JjwnzOjA1bA/exec";
+  "https://script.google.com/macros/s/AKfycbwmDZekQslUIToi2hOe9G51T5yX6eBzc26TYVRmgR1CQrbojGk9uyBgt3XrY7ZKr09u/exec";
 
 async function fetchAndPopulateDatabase() {
   try {
