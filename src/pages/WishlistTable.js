@@ -146,7 +146,6 @@ const WishlistTable = ({ sponsoredCount, setSponsoredCount }) => {
                                         </Link>
                                     </div>
                                     <div className="child-details">
-                                        <p><strong>School: </strong>{child.schoolName}</p>
                                         {child.story && child.story !== 'N/A' && (
                                             <p><strong>Story: </strong>{child.story}</p>
                                         )}
