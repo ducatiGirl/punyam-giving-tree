@@ -1,7 +1,7 @@
 
 import React from 'react';
 
-const MangoIcon = ({ color = 'currentColor', size = 40, className, style }) => (
+const MangoIcon = ({ color = 'currentColor', size = 24, className, style }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 24 24"
