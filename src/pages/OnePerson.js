@@ -143,7 +143,7 @@ const OnePerson = ({ setSponsoredCount }) => {
         <div className="giving-tree-no-container">
             <div className="child-no-card">
                 <div className="one-child-details">
-                    <p className="intro-text">Hi, my name is {selectedChild.name}. I am a student at {selectedChild.schoolName}.</p>
+                    <p className="intro-text">Hi, my name is {selectedChild.name}.</p>
                     {selectedChild.story && selectedChild.story !== 'N/A' && (
                         <p className="story-text">My story: {selectedChild.story}</p>
                     )}
