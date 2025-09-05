@@ -35,7 +35,6 @@ const WishlistTable = ({ sponsoredCount, setSponsoredCount }) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                // CHANGED API ENDPOINT TO FETCH ONLY THE FIRST 30 ITEMS
                 const response = await fetch(process.env.REACT_APP_API_URL + '/api/needs');
                 const data = await response.json();
                 setChildren(data.data);
