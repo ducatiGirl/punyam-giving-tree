@@ -33,15 +33,15 @@ async function fetchAndPopulateDatabase() {
             const parts = nameAndStory.split("--");
             const name = parts[0]?.trim() || "N/A";
             const story = parts.length > 1 ? parts.slice(1).join("--").trim() : "N/A";
-            
-            // CORRECTED: Using the correct column headers from your Google Sheet
-            const wishlist = row["02 Category \nPlease categorize the needs as Financial help, bicycle, phone, house repair, house building, phone, wheel chair"] || "N/A";
+
+            // CORRECTED: Using a simplified way to get the data
+            const wishlist = row["02 Category "] || "N/A";
             const cost = parseFloat(row["03 Cost"]) || 0;
-            
+
             const isSponsored = row["Sponsored?"] === "TRUE" ? 1 : 0;
 
             const id = `${cost}-${name}-${index}`.replace(/\s/g, "");
-            
+
             stmt.run(
               id,
               schoolName,
