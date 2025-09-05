@@ -273,3 +273,7 @@ body {
 .sponsored-count-display p:hover {
     text-decoration: underline; /* Adds an underline on hover for better user experience */
 }
+
+.mango-outline {
+  filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.7));
+}
