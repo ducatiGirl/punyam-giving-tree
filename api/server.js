@@ -23,22 +23,33 @@ async function fetchAndPopulateDatabase() {
             return reject(err);
           }
 
+          if (sheetData.data.length === 0) {
+            console.log("No data found in Google Sheet. Database remains empty.");
+            return resolve();
+          }
+
+          const headers = Object.keys(sheetData.data[0]);
+          const schoolNameKey = headers.find(key => key.includes("00 School Name"));
+          const needsDetailsKey = headers.find(key => key.includes("01 Needs Details"));
+          const categoryKey = headers.find(key => key.includes("02 Category"));
+          const costKey = headers.find(key => key.includes("03 Cost"));
+          const sponsoredKey = headers.find(key => key.includes("Sponsored"));
+
           const stmt = db.prepare(
             "INSERT INTO full_story_for_mango_tree VALUES (?, ?, ?, ?, ?, ?, ?)"
           );
           let completed = 0;
           sheetData.data.forEach((row, index) => {
-            const schoolName = row["00 School Name\n"]?.replace(/^\d+\s?/, "").trim() || "";
-            const nameAndStory = row["01 Needs Details :\n"] || "";
+            const schoolName = row[schoolNameKey]?.replace(/^\d+\s?/, "").trim() || "";
+            const nameAndStory = row[needsDetailsKey] || "";
             const parts = nameAndStory.split("--");
             const name = parts[0]?.trim() || "N/A";
             const story = parts.length > 1 ? parts.slice(1).join("--").trim() : "N/A";
 
-            // CORRECTED: Using a simplified way to get the data
-            const wishlist = row["02 Category "] || "N/A";
-            const cost = parseFloat(row["03 Cost"]) || 0;
-
-            const isSponsored = row["Sponsored?"] === "TRUE" ? 1 : 0;
+            // CORRECTED: Dynamically find keys to handle unexpected characters
+            const wishlist = row[categoryKey] || "N/A";
+            const cost = parseFloat(row[costKey]) || 0;
+            const isSponsored = row[sponsoredKey] === "TRUE" ? 1 : 0;
 
             const id = `${cost}-${name}-${index}`.replace(/\s/g, "");
 
@@ -63,10 +74,6 @@ async function fetchAndPopulateDatabase() {
               }
             );
           });
-          if (sheetData.data.length === 0) {
-            stmt.finalize();
-            resolve();
-          }
         });
       });
     });
