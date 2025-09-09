@@ -20,22 +20,22 @@ const OnePerson = ({ setSponsoredCount }) => {
     useEffect(() => {
         const fetchDataAndSetChild = async () => {
             try {
-                // Fetch all children from the API
                 const response = await fetch(process.env.REACT_APP_API_URL + '/api/all-needs');
                 const data = await response.json();
                 const childrenList = data.data;
                 setChildren(childrenList);
 
-                // Use the ID from the URL to find the correct child
                 const personId = searchParams.get('id');
                 const foundChild = childrenList.find(child => child.id === personId);
 
                 if (foundChild) {
                     setSelectedChild(foundChild);
-                } else {
-                    // Handle the case where the child is not found
-                    setSelectedChild(null);
-                    console.error("No child found with ID:", personId);
+                } else if (childrenList.length > 0) {
+                    // This is the restored logic to default to the first person
+                    // if the URL doesn't have a valid ID. This is what you asked for.
+                    const firstChild = childrenList[0];
+                    setSearchParams({ id: firstChild.id });
+                    setSelectedChild(firstChild);
                 }
                 setLoading(false);
             } catch (error) {
@@ -44,7 +44,7 @@ const OnePerson = ({ setSponsoredCount }) => {
             }
         };
         fetchDataAndSetChild();
-    }, [searchParams]);
+    }, [searchParams, setSearchParams]); // Dependency array updated to include setSearchParams
 
     const handleSponsorClick = (child) => {
         const prefilledUrl = `${GOOGLE_FORM_URL}?usp=pp_url&entry.${CHILD_NAME_ENTRY_ID}=${encodeURIComponent(child.name)}`;
@@ -59,11 +59,9 @@ const OnePerson = ({ setSponsoredCount }) => {
         try {
             const newSponsoredStatus = 1;
 
-            // Optimistic UI update.
             setSelectedChild({ ...selectedChild, sponsored: newSponsoredStatus });
             setSponsoredCount(prevCount => prevCount + 1);
 
-            // API call to update the backend.
             const response = await fetch(`${process.env.REACT_APP_API_URL}/api/needs/${personId}`, {
                 method: 'PUT',
                 headers: {
@@ -79,7 +77,6 @@ const OnePerson = ({ setSponsoredCount }) => {
             console.log(`Updated personId: ${personId} as sponsored status: ${newSponsoredStatus}.`);
         } catch (error) {
             console.error("Failed to update sponsorship status:", error);
-            // Rollback the local and global state if the API call fails.
             setSelectedChild({ ...selectedChild, sponsored: 0 });
             setSponsoredCount(prevCount => prevCount - 1);
         }
