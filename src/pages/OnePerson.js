@@ -20,30 +20,31 @@ const OnePerson = ({ setSponsoredCount }) => {
     useEffect(() => {
         const fetchDataAndSetChild = async () => {
             try {
-                // Fetch only the first 30 children from the API
-                const response = await fetch(process.env.REACT_APP_API_URL + '/api/needs');
+                // Fetch all children from the API
+                const response = await fetch(process.env.REACT_APP_API_URL + '/api/all-needs');
                 const data = await response.json();
                 const childrenList = data.data;
                 setChildren(childrenList);
-                setLoading(false);
 
+                // Use the ID from the URL to find the correct child
                 const personId = searchParams.get('id');
                 const foundChild = childrenList.find(child => child.id === personId);
 
                 if (foundChild) {
                     setSelectedChild(foundChild);
-                } else if (childrenList.length > 0) {
-                    const firstChild = childrenList[0];
-                    setSearchParams({ id: firstChild.id });
-                    setSelectedChild(firstChild);
+                } else {
+                    // Handle the case where the child is not found
+                    setSelectedChild(null);
+                    console.error("No child found with ID:", personId);
                 }
+                setLoading(false);
             } catch (error) {
                 console.error("Failed to fetch data:", error);
                 setLoading(false);
             }
         };
         fetchDataAndSetChild();
-    }, [searchParams, setSearchParams]);
+    }, [searchParams]);
 
     const handleSponsorClick = (child) => {
         const prefilledUrl = `${GOOGLE_FORM_URL}?usp=pp_url&entry.${CHILD_NAME_ENTRY_ID}=${encodeURIComponent(child.name)}`;
@@ -132,8 +133,12 @@ const OnePerson = ({ setSponsoredCount }) => {
         return compellingStatements[randomIndex];
     };
 
-    if (loading || !selectedChild) {
+    if (loading) {
         return <div className="loading-state">Loading...</div>;
+    }
+
+    if (!selectedChild) {
+        return <div className="not-found-state">Child not found. Please try another QR code.</div>;
     }
 
     const currentIndex = children.findIndex(child => child.id === selectedChild.id);
@@ -148,7 +153,6 @@ const OnePerson = ({ setSponsoredCount }) => {
                         <p className="story-text">My story: {selectedChild.story}</p>
                     )}
                     <div className="wishlist-info">
-                        {/* CORRECTED COLUMN NAME TO WISHLIST */}
                         <p>This season, my wish is for {selectedChild.wishlist}.</p>
                         <p>The price is ${selectedChild.cost}.</p>
                     </div>
