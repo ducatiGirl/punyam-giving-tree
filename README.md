@@ -1,6 +1,8 @@
 # Punyam Giving Tree
 
 > A digital platform designed to foster community generosity, track donations, and watch collective kindness grow.
+This project is an official initiative of **[Punyam Youth](https://punyamyouth.org/)**, a 501(c)(3) non-profit organization dedicated to youth empowerment and community service.
+**Live Demo:** Explore the live application at [punyam-giving-tree.vercel.app](https://punyam-giving-tree.vercel.app/)
 
 ---
 
