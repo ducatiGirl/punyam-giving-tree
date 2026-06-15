@@ -1,6 +1,6 @@
 # Punyam Giving Tree
 
-> A digital platform designed to foster community generosity, track charitable acts, and watch collective kindness grow.
+> A digital platform designed to foster community generosity, track donations, and watch collective kindness grow.
 
 ---
 
@@ -25,10 +25,9 @@ As users contribute Punyam meaning good deeds, the digital tree flourishes, prov
 
 ## Features
 
-* **Visual Growth Tracker:** Watch the community tree grow leaves, flowers, and fruits as giving goals are met.
+* **Visual Growth Tracker:** Watch the community tree ripen its mangos as each person donates money.
 * **Impact Dashboard:** Users can track their personal contributions and see where their donations are going.
 * **Anonymous Giving:** Options to contribute privately while still contributing to the overall tree growth.
-* **Micro-Volunteering:** A notice board for quick, local tasks that need doing.
 
 ## Tech Stack
 
